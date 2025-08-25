@@ -54,4 +54,62 @@ mv ~/Downloads/syukujitsu.csv holidays/syukujitsu.csv
 
 ### 自動実行（推奨）
 
-cron 等を利用して設定してください。
+cron ジョブを使用して、平日の業務開始・終了時に自動通知を送信できます。
+
+#### 簡単セットアップ（推奨）
+
+```bash
+# cronディレクトリに移動
+cd cron
+
+# スクリプトを実行可能にする
+chmod +x setup-cron.sh remove-cron.sh
+
+# 自動セットアップを実行
+./setup-cron.sh
+```
+
+これで以下のスケジュールで自動通知が設定されます：
+
+- **業務開始**: 月曜日〜金曜日の午前 9:00（ランダム 1〜5 分遅延）
+- **業務終了**: 月曜日〜金曜日の午後 6:00（ランダム 1〜5 分遅延）
+
+#### 手動セットアップ
+
+1. プロジェクトをビルド：
+
+   ```bash
+   npm run build
+   ```
+
+2. crontab を編集：
+
+   ```bash
+   crontab -e
+   ```
+
+3. 以下を追加（プロジェクトパスを実際のパスに変更）：
+
+   ```cron
+   # PATH設定
+   PATH=/usr/local/bin:/usr/bin:/bin:$(dirname $(which node))
+
+   # 業務開始・終了通知
+   0 9 * * 1-5 cd /path/to/your/project && node dist/index.js start
+   0 18 * * 1-5 cd /path/to/your/project && node dist/index.js end
+   ```
+
+#### cron ジョブの管理
+
+```bash
+# 現在の設定を確認
+crontab -l
+
+# cron ジョブを削除（自動削除スクリプト使用）
+cd cron && ./remove-cron.sh
+
+# または手動で削除
+crontab -e  # エディタで該当行を削除
+```
+
+詳細な設定方法やトラブルシューティングは `cron/CRON_SETUP.md` を参照してください。

@@ -1,0 +1,32 @@
+# Slack Work CLI - Automatic work start/end notifications
+# This crontab file schedules automatic work notifications for weekdays (Mon-Fri)
+#
+# Format: minute hour day month dayofweek command
+# Weekdays: 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday
+#
+# To install this crontab:
+# 1. crontab -e
+# 2. Copy and paste the lines below (excluding comments if desired)
+# 3. Save and exit
+#
+# To check current crontab:
+# crontab -l
+#
+# To remove crontab:
+# crontab -r
+
+# Set PATH to ensure npm and node are found
+# NOTE: Update the Node.js path below to match your system's Node.js installation
+# You can find your Node.js path with: which node
+PATH=/usr/local/bin:/usr/bin:/bin:$(dirname $(which node))
+
+# Work start notification - Monday to Friday at 9:00 AM JST
+# NOTE: Update /path/to/your/project below to your actual project directory
+0 9 * * 1-5 cd /path/to/your/project && node dist/index.js start
+
+# Work end notification - Monday to Friday at 6:00 PM JST
+# NOTE: Update /path/to/your/project below to your actual project directory
+0 18 * * 1-5 cd /path/to/your/project && node dist/index.js end
+
+# Note: Make sure to run 'npm run build' before setting up crontab to ensure
+# the dist/index.js file is up to date with your latest changes.

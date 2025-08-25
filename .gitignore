@@ -14,8 +14,8 @@ build/
 .env.local
 .env.*.local
 
-# Cron configuration files
-cron/
+# Cron backup files (exclude only backup files, not the configuration)
+cron/crontab.backup
 
 # OS generated files
 .DS_Store
