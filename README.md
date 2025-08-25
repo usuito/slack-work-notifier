@@ -25,19 +25,7 @@ START_DEFAULT_MESSAGE=業務開始
 END_DEFAULT_MESSAGE=業務終了
 ```
 
-## 使い方
-
-### 手動実行
-
-```bash
-# 業務開始通知
-npm run dev start
-
-# 業務終了通知
-npm run dev end
-```
-
-### 祝日の設定
+### 3. 祝日の設定
 
 祝日に自動的に通知をスキップするため、内閣府の公式祝日データを使用します。
 
@@ -51,6 +39,18 @@ mv ~/Downloads/syukujitsu.csv holidays/syukujitsu.csv
 ```
 
 祝日データが正しく設定されていれば、祝日には自動的に通知がスキップされます。
+
+## 使い方
+
+### 手動実行
+
+```bash
+# 業務開始通知
+npm run dev start
+
+# 業務終了通知
+npm run dev end
+```
 
 ### 自動実行（推奨）
 
