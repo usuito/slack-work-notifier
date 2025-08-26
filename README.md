@@ -54,9 +54,64 @@ npm run dev end
 
 ### 自動実行（推奨）
 
-cron ジョブを使用して、平日の業務開始・終了時に自動通知を送信できます。
+平日の業務開始・終了時に自動通知を送信する方法は 2 つあります：
 
-#### 簡単セットアップ（推奨）
+- **cron**: 従来の Unix スケジューラー
+- **launchd**: macOS ネイティブのスケジューラー（**推奨**）
+
+#### 💡 どちらを選ぶべき？
+
+**launchd（推奨）**:
+
+- ✅ **スリープ復帰対応**: Mac がスリープから復帰した後も正常に動作
+- ✅ **電源管理最適化**: macOS の電源管理機能と協調動作
+- ✅ **自動復旧**: プロセスが異常終了した場合の自動再起動
+- ✅ **システム統合**: macOS にネイティブ統合
+
+**cron**:
+
+- ❌ スリープ中は動作しない
+- ✅ Unix/Linux 系 OS で汎用的に利用可能
+
+## launchd を使用（macOS 推奨）
+
+### 簡単セットアップ（推奨）
+
+```bash
+# launchdディレクトリに移動
+cd launchd
+
+# スクリプトを実行可能にする
+chmod +x setup-launchd.sh remove-launchd.sh
+
+# 自動セットアップを実行
+./setup-launchd.sh
+```
+
+これで以下のスケジュールで自動通知が設定されます：
+
+- **業務開始**: 月曜日〜金曜日の午前 9:00（ランダム 1〜5 分遅延）
+- **業務終了**: 月曜日〜金曜日の午後 6:00（ランダム 1〜5 分遅延）
+
+### launchd の管理
+
+```bash
+# エージェントの状態確認
+launchctl list | grep slack-work-notifier
+
+# ログファイルの確認
+tail -f logs/start.log
+tail -f logs/end.log
+
+# launchd 設定を削除（自動削除スクリプト使用）
+cd launchd && ./remove-launchd.sh
+```
+
+詳細な設定方法やトラブルシューティングは `launchd/LAUNCHD_SETUP.md` を参照してください。
+
+## cron を使用
+
+### 簡単セットアップ
 
 ```bash
 # cronディレクトリに移動
@@ -113,3 +168,35 @@ crontab -e  # エディタで該当行を削除
 ```
 
 詳細な設定方法やトラブルシューティングは `cron/CRON_SETUP.md` を参照してください。
+
+## テスト・ステータス確認
+
+```bash
+# 接続テスト
+npm run dev status
+
+# 業務開始通知のテスト
+npm run dev start
+
+# 業務終了通知のテスト
+npm run dev end
+```
+
+## ファイル構成
+
+```
+slack-work-notifier/
+├── src/                    # TypeScript ソースコード
+├── dist/                   # ビルド済み JavaScript
+├── holidays/               # 祝日データ
+├── logs/                   # ログファイル（launchd 使用時）
+├── cron/                   # cron 設定関連
+│   ├── setup-cron.sh      # cron 自動セットアップ
+│   ├── remove-cron.sh     # cron 削除
+│   └── CRON_SETUP.md      # cron 詳細ガイド
+├── launchd/                # launchd 設定関連（macOS 推奨）
+│   ├── setup-launchd.sh   # launchd 自動セットアップ
+│   ├── remove-launchd.sh  # launchd 削除
+│   └── LAUNCHD_SETUP.md   # launchd 詳細ガイド
+└── .env                    # 環境変数設定
+```
