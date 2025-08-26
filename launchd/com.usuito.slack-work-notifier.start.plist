@@ -7,7 +7,7 @@
     
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/local/bin/node</string>
+        <string>NODE_PATH</string>
         <string>PROJECT_PATH/dist/index.js</string>
         <string>start</string>
     </array>
@@ -18,23 +18,12 @@
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin</string>
+        <string>NODE_BIN_PATH:/usr/local/bin:/usr/bin:/bin</string>
         <key>NODE_ENV</key>
         <string>production</string>
     </dict>
     
     <!-- Run Monday to Friday at 9:00 AM -->
-    <key>StartCalendarInterval</key>
-    <dict>
-        <key>Weekday</key>
-        <integer>1</integer>
-        <key>Hour</key>
-        <integer>9</integer>
-        <key>Minute</key>
-        <integer>0</integer>
-    </dict>
-    
-    <!-- Additional weekdays -->
     <key>StartCalendarIntervals</key>
     <array>
         <!-- Monday -->

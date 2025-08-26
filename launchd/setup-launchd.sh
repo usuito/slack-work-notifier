@@ -83,8 +83,9 @@ print_status "Project built successfully"
 update_plist_file() {
     local template_file="$1"
     local output_file="$2"
+    local node_bin_dir="$(dirname "$NODE_PATH")"
     
-    sed "s|PROJECT_PATH|$PROJECT_DIR|g; s|/usr/local/bin/node|$NODE_PATH|g" "$template_file" > "$output_file"
+    sed "s|PROJECT_PATH|$PROJECT_DIR|g; s|NODE_PATH|$NODE_PATH|g; s|NODE_BIN_PATH|$node_bin_dir|g" "$template_file" > "$output_file"
 }
 
 # Copy and update plist files
