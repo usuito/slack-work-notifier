@@ -18,16 +18,16 @@ echo "----------------------------"
 current_crontab=$(crontab -l 2>/dev/null || echo "No crontab entries found.")
 echo "$current_crontab"
 
-# Check if our entries exist
-if echo "$current_crontab" | grep -q "slack-work-cli"; then
+# Check if our entries exist (look for dist/index.js or slack-work-notifier)
+if echo "$current_crontab" | grep -q -E "(dist/index\.js|slack-work-notifier)"; then
     echo ""
-    echo "🔍 Found Slack Work CLI entries in crontab."
+    echo "🔍 Found Slack Work Notifier entries in crontab."
     echo ""
     
     # Show which entries will be removed
     echo "📋 Entries to be removed:"
     echo "------------------------"
-    echo "$current_crontab" | grep "slack-work-cli" || true
+    echo "$current_crontab" | grep -E "(dist/index\.js|slack-work-notifier)" || true
     
     echo ""
     read -p "Do you want to remove these cron jobs? (y/N): " -n 1 -r
@@ -38,14 +38,14 @@ if echo "$current_crontab" | grep -q "slack-work-cli"; then
         echo "💾 Backing up current crontab to cron/crontab.backup..."
         crontab -l > "$CRON_DIR/crontab.backup" 2>/dev/null || echo "# No previous crontab" > "$CRON_DIR/crontab.backup"
         
-        # Create new crontab without slack-work-cli entries
+        # Create new crontab without slack-work-notifier entries
         temp_crontab=$(mktemp)
-        crontab -l 2>/dev/null | grep -v "slack-work-cli" > "$temp_crontab" || true
+        crontab -l 2>/dev/null | grep -v -E "(dist/index\.js|slack-work-notifier)" > "$temp_crontab" || true
         
         # Install new crontab
         if [ -s "$temp_crontab" ]; then
             crontab "$temp_crontab"
-            echo "✅ Slack Work CLI cron jobs removed successfully!"
+            echo "✅ Slack Work Notifier cron jobs removed successfully!"
         else
             crontab -r
             echo "✅ All cron jobs removed (crontab was empty after removal)!"
@@ -73,7 +73,7 @@ if echo "$current_crontab" | grep -q "slack-work-cli"; then
     fi
 else
     echo ""
-    echo "ℹ️  No Slack Work CLI entries found in crontab."
+    echo "ℹ️  No Slack Work Notifier entries found in crontab."
 fi
 
 echo ""
