@@ -21,6 +21,8 @@
         <string>NODE_BIN_PATH:/usr/local/bin:/usr/bin:/bin</string>
         <key>NODE_ENV</key>
         <string>production</string>
+        <key>TZ</key>
+        <string>Asia/Tokyo</string>
     </dict>
     
     <!-- Run Monday to Friday at 9:00 AM -->

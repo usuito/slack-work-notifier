@@ -6,10 +6,15 @@ import { HolidayChecker } from "./holiday-checker";
 import { config } from "./config";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import * as fs from "fs";
 import * as path from "path";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale("ja");
+dayjs.tz.setDefault("Asia/Tokyo");
 
 // Execution time management
 interface ExecutionRecord {
@@ -53,7 +58,7 @@ class ExecutionGuard {
   }
 
   private isInTimeWindow(commandType: "start" | "end"): boolean {
-    const now = dayjs();
+    const now = dayjs.tz();
     const hour = now.hour();
 
     if (commandType === "start") {
@@ -74,8 +79,8 @@ class ExecutionGuard {
       return false;
     }
 
-    const lastExecution = dayjs(lastExecutionStr);
-    const now = dayjs();
+    const lastExecution = dayjs.tz(lastExecutionStr);
+    const now = dayjs.tz();
 
     // Check if already executed today
     return lastExecution.isSame(now, "day");
@@ -84,7 +89,7 @@ class ExecutionGuard {
   shouldExecute(commandType: "start" | "end"): boolean {
     // Check if in appropriate time window
     if (!this.isInTimeWindow(commandType)) {
-      const now = dayjs();
+      const now = dayjs.tz();
       const timeWindow =
         commandType === "start" ? "08:30-09:30" : "18:00-18:59";
       console.log(
@@ -108,7 +113,7 @@ class ExecutionGuard {
 
   recordExecution(commandType: "start" | "end"): void {
     const record = this.loadExecutionRecord();
-    const now = dayjs().toISOString();
+    const now = dayjs.tz().toISOString();
 
     if (commandType === "start") {
       record.start = now;
@@ -118,9 +123,9 @@ class ExecutionGuard {
 
     this.saveExecutionRecord(record);
     console.log(
-      `📝 Recorded ${commandType} execution at ${dayjs(now).format(
-        "YYYY-MM-DD HH:mm:ss"
-      )}`
+      `📝 Recorded ${commandType} execution at ${dayjs
+        .tz(now)
+        .format("YYYY-MM-DD HH:mm:ss")}`
     );
   }
 }
@@ -166,7 +171,7 @@ program
 
       // Check if today is a holiday
       const holidayChecker = new HolidayChecker();
-      const today = dayjs().format("YYYY-MM-DD");
+      const today = dayjs.tz().format("YYYY-MM-DD");
 
       if (holidayChecker.isTodayHoliday()) {
         console.log(
@@ -208,7 +213,7 @@ program
 
       // Check if today is a holiday
       const holidayChecker = new HolidayChecker();
-      const today = dayjs().format("YYYY-MM-DD");
+      const today = dayjs.tz().format("YYYY-MM-DD");
 
       if (holidayChecker.isTodayHoliday()) {
         console.log(
@@ -242,10 +247,10 @@ program
     try {
       // Check holiday status
       const holidayChecker = new HolidayChecker();
-      const today = dayjs().format("YYYY-MM-DD");
+      const today = dayjs.tz().format("YYYY-MM-DD");
       const isHoliday = holidayChecker.isTodayHoliday();
 
-      console.log(`📅 Today: ${today} (${dayjs().format("dddd")})`);
+      console.log(`📅 Today: ${today} (${dayjs.tz().format("dddd")})`);
       console.log(
         `🎌 Holiday status: ${
           isHoliday ? "Yes, today is a holiday!" : "No, today is not a holiday."
